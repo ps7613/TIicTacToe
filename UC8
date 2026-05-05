@@ -1,0 +1,130 @@
+import java.util.Scanner;
+import java.util.Random;
+
+public class TicTacToeGame {
+
+    // ===== UC5: Validate Move =====
+    public static boolean isValidMove(char[][] board, int row, int col) {
+        return (row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col] == '-');
+    }
+
+    // ===== UC4: Convert Slot =====
+    public static int[] convertSlot(int slot) {
+        int index = slot - 1;
+        return new int[]{index / 3, index % 3};
+    }
+
+    // ===== UC6: Place Move =====
+    public static void placeMove(char[][] board, int row, int col, char symbol) {
+        board[row][col] = symbol;
+    }
+
+    // ===== Print Board =====
+    public static void printBoard(char[][] board) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                System.out.print(board[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    // ===== Check Winner =====
+    public static boolean checkWin(char[][] b, char s) {
+        // Rows & Columns
+        for (int i = 0; i < 3; i++) {
+            if ((b[i][0] == s && b[i][1] == s && b[i][2] == s) ||
+                (b[0][i] == s && b[1][i] == s && b[2][i] == s)) {
+                return true;
+            }
+        }
+        // Diagonals
+        if ((b[0][0] == s && b[1][1] == s && b[2][2] == s) ||
+            (b[0][2] == s && b[1][1] == s && b[2][0] == s)) {
+            return true;
+        }
+        return false;
+    }
+
+    // ===== Check Draw =====
+    public static boolean isDraw(char[][] board) {
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (board[i][j] == '-')
+                    return false;
+        return true;
+    }
+
+    // ===== UC7: Computer Move =====
+    public static void computerMove(char[][] board, char symbol) {
+        Random rand = new Random();
+        while (true) {
+            int slot = rand.nextInt(9) + 1;
+            int[] pos = convertSlot(slot);
+            if (isValidMove(board, pos[0], pos[1])) {
+                placeMove(board, pos[0], pos[1], symbol);
+                System.out.println("Computer chose slot: " + slot);
+                break;
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        // Initialize board
+        char[][] board = {
+            {'-', '-', '-'},
+            {'-', '-', '-'},
+            {'-', '-', '-'}
+        };
+
+        char currentSymbol = 'X'; // starting player
+        boolean gameOver = false;
+
+        while (!gameOver) {
+
+            printBoard(board);
+
+            if (currentSymbol == 'X') {
+                // Human move
+                int slot;
+                while (true) {
+                    System.out.print("Enter slot (1-9): ");
+                    slot = sc.nextInt();
+                    int[] pos = convertSlot(slot);
+
+                    if (isValidMove(board, pos[0], pos[1])) {
+                        placeMove(board, pos[0], pos[1], currentSymbol);
+                        break;
+                    } else {
+                        System.out.println("Invalid move, try again!");
+                    }
+                }
+            } else {
+                // Computer move
+                computerMove(board, currentSymbol);
+            }
+
+            // Check win
+            if (checkWin(board, currentSymbol)) {
+                printBoard(board);
+                System.out.println(currentSymbol + " wins!");
+                gameOver = true;
+            }
+            // Check draw
+            else if (isDraw(board)) {
+                printBoard(board);
+                System.out.println("It's a draw!");
+                gameOver = true;
+            }
+            // Switch turn
+            else {
+                currentSymbol = (currentSymbol == 'X') ? 'O' : 'X';
+            }
+        }
+
+        sc.close();
+    }
+}
