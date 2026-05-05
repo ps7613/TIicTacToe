@@ -1,0 +1,70 @@
+import java.util.Random;
+
+public class ComputerMove {
+
+    // Validate move (UC5 logic reuse)
+    public static boolean isValidMove(char[][] board, int row, int col) {
+        return (row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col] == '-');
+    }
+
+    // Convert slot (1–9) to row & column (UC4 reuse)
+    public static int[] convertSlot(int slot) {
+        int index = slot - 1;
+        int row = index / 3;
+        int col = index % 3;
+        return new int[]{row, col};
+    }
+
+    // Place move (UC6 reuse)
+    public static void placeMove(char[][] board, int row, int col, char symbol) {
+        board[row][col] = symbol;
+    }
+
+    // Print board
+    public static void printBoard(char[][] board) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                System.out.print(board[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    // UC7: Computer random move
+    public static void computerMove(char[][] board, char symbol) {
+        Random rand = new Random();
+        int slot;
+        int row, col;
+
+        // Keep trying until a valid move is found
+        while (true) {
+            slot = rand.nextInt(9) + 1; // 1 to 9
+            int[] pos = convertSlot(slot);
+            row = pos[0];
+            col = pos[1];
+
+            if (isValidMove(board, row, col)) {
+                placeMove(board, row, col, symbol);
+                System.out.println("Computer chose slot: " + slot);
+                break;
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        char[][] board = {
+            {'X', '-', '-'},
+            {'-', 'O', '-'},
+            {'-', '-', '-'}
+        };
+
+        System.out.println("Before move:");
+        printBoard(board);
+
+        computerMove(board, 'X');
+
+        System.out.println("\nAfter move:");
+        printBoard(board);
+    }
+}
