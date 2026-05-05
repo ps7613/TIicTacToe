@@ -1,0 +1,32 @@
+public class CheckDraw {
+
+    // Method to check draw
+    public static boolean isDraw(char[][] board) {
+
+        // Traverse board to check for empty cells
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == '-') {
+                    return false; // still moves left
+                }
+            }
+        }
+
+        return true; // no empty cells → draw
+    }
+
+    public static void main(String[] args) {
+
+        char[][] board = {
+            {'X', 'O', 'X'},
+            {'X', 'O', 'O'},
+            {'O', 'X', 'X'}
+        };
+
+        if (isDraw(board)) {
+            System.out.println("It's a draw!");
+        } else {
+            System.out.println("Game not finished yet.");
+        }
+    }
+}
